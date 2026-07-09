@@ -19,6 +19,12 @@ func compactJSON(v any) ([]byte, error) {
 	return bytes.TrimRight(buf.Bytes(), "\n"), nil
 }
 
+// CompactJSON serializes v to compact JSON without HTML escaping.
+// This is the exported version of compactJSON for use by the server package.
+func CompactJSON(v any) ([]byte, error) {
+	return compactJSON(v)
+}
+
 // compactJSONString is a convenience wrapper returning a string.
 func compactJSONString(v any) (string, error) {
 	b, err := compactJSON(v)

@@ -7,7 +7,7 @@ This is a Go reimplementation of the [Python hax-sdk](https://pypi.org/project/h
 ## Installation
 
 ```bash
-go get github.com/Agent-Field/hax-go
+go get github.com/philhug/hax-go
 ```
 
 ## Quick Start
@@ -17,7 +17,7 @@ package main
 
 import (
     "fmt"
-    hax "github.com/Agent-Field/hax-go"
+    hax "github.com/philhug/hax-go"
 )
 
 func main() {
@@ -319,6 +319,79 @@ case *hax.HaxError:
 | `multi-step-wizard-v1` | Sequential steps with navigation |
 | `side-by-side-comparison-v1` | Compare two versions with diff highlighting |
 | `terminal-output-v1` | Display command output/logs with approve-to-continue |
+
+## Reference Server
+
+The `server/` package provides a reference HAX API server implementation. It implements the full API surface that the `HaxClient` talks to, making it useful for local development, testing, and integration validation.
+
+### Running the Server
+
+```bash
+# Build and run
+go run ./cmd/haxserver --addr :8080 --api-key my-secret-key
+
+# With webhooks and manual knock acceptance
+go run ./cmd/haxserver --webhook-secret whsec_... --no-auto-accept
+```
+
+### Using as a Library
+
+```go
+import "github.com/philhug/hax-go/server"
+
+srv := server.NewServer(server.Config{
+    Addr:    ":8080",
+    APIKey:  "my-secret-key",
+})
+srv.ListenAndServe()
+```
+
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/requests` | Create a request |
+| `GET` | `/api/v1/requests` | List recent requests |
+| `GET` | `/api/v1/requests/{id}` | Get a request by ID |
+| `PATCH` | `/api/v1/requests/{id}` | Update request status (cancel) |
+| `POST` | `/api/v1/requests/{id}/response` | Submit a response |
+| `GET` | `/api/v1/types` | List/search template types |
+| `GET` | `/api/v1/knock/status` | Check DID knock status |
+| `PATCH` | `/api/v1/workspaces/settings` | Configure messaging providers |
+| `POST` | `/api/v1/admin/knock` | *(admin)* Accept/block a DID knock |
+| `POST` | `/api/v1/admin/respond` | *(admin)* Submit a response on behalf |
+
+### Features
+
+- **Dual auth**: API key (Bearer) and DID JWS signature verification
+- **Response encryption**: RSA-OAEP-SHA256 when `publicKey` is provided
+- **Webhook dispatch**: HMAC-SHA256 signed webhooks on response submission
+- **Knock flow**: Auto-accept (default) or manual DID acceptance with held requests
+- **In-memory store**: Thread-safe, no external database needed
+- **17 built-in types**: Matching the HAX artifact registry
+
+### Testing Against the Server
+
+```go
+func TestMyFeature(t *testing.T) {
+    _, baseURL, cleanup := server.NewTestServer(server.Config{
+        APIKey: "test-key",
+    })
+    defer cleanup()
+
+    client, _ := hax.NewClient(hax.ClientOptions{
+        BaseURL: baseURL,
+        APIKey:  "test-key",
+    })
+    defer client.Close()
+
+    req, _ := client.CreateRequest(hax.CreateRequestParams{
+        Type:    "text-approval-v1",
+        Payload: map[string]any{"text": "Approve?"},
+    })
+    // ...
+}
+```
 
 ## License
 

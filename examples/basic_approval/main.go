@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	hax "github.com/Agent-Field/hax-go"
+	hax "github.com/philhug/hax-go"
 )
 
 func main() {

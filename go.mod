@@ -1,3 +1,3 @@
-module github.com/Agent-Field/hax-go
+module github.com/philhug/hax-go
 
 go 1.26.2

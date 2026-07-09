@@ -5,6 +5,7 @@
 *.so
 *.dylib
 hax-go
+haxserver
 
 # Test binary
 *.test
