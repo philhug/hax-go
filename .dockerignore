@@ -1,0 +1,26 @@
+# Build context exclusions
+.git/
+.github/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Go artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.txt
+go.work
+go.work.sum
+
+# Local binaries
+hax-go
+haxserver
