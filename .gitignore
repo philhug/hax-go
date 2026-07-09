@@ -1,11 +1,11 @@
-# Binaries
+# Binaries (root-level only — /haxserver, not /cmd/haxserver)
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-hax-go
-haxserver
+/hax-go
+/haxserver
 
 # Test binary
 *.test
