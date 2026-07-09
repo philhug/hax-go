@@ -21,6 +21,6 @@ coverage.txt
 go.work
 go.work.sum
 
-# Local binaries
-hax-go
-haxserver
+# Local binaries (root-level only — /haxserver, not /cmd/haxserver)
+/hax-go
+/haxserver
